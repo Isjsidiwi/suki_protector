@@ -102,7 +102,7 @@ def validate_user():
     # Loop Cek Server
     for game in scan_list:
         try:
-            payload = {"game": game, "user_key": user_key, "serial": device_id}
+            payload = {"user_key": user_key, "serial": device_id}
             r = requests.post(AUTH_URL, data=payload, timeout=3)
             if r.status_code == 200:
                 resp = r.json()
