@@ -7,7 +7,15 @@ import uuid
 
 # --- CONFIG ---
 AUTH_URL = "https://lixynso.x10.mx/connect"
-R, G, C, Y, W, P = "\033[31m", "\033[32m", "\033[36m", "\033[33m", "\033[0m", "\033[35m"
+
+# --- DEFINISI WARNA (SUDAH DIPERBAIKI) ---
+R = "\033[31m"   # Merah
+G = "\033[32m"   # Hijau
+C = "\033[36m"   # Cyan
+Y = "\033[33m"   # Kuning
+W = "\033[0m"    # Putih (Reset)
+P = "\033[35m"   # Purple
+B = "\033[1m"    # Bold (INI YANG TADI HILANG)
 
 def get_android_id():
     """Mendapatkan Device ID"""
@@ -22,21 +30,17 @@ def get_android_id():
 def security_checks():
     """
     Cek Keamanan: HANYA Anti-Sniffer. 
-    (Cek VPN tun0 dihapus karena menyebabkan false alarm di banyak HP)
+    (Anti-VPN dimatikan agar tidak false alarm)
     """
     threat = False
     threat_type = ""
 
-    # 1. Cek Environment Proxy (Sangat Akurat untuk Anti Canary/Reqable)
-    # Hacker harus mematikan ini dulu untuk mencuri data
+    # Cek Environment Proxy (Anti Canary/Reqable)
     proxies = ["http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"]
     for proxy in proxies:
         if proxy in os.environ:
             threat = True
             threat_type = "HTTP CANARY / SNIFFER DETECTED"
-    
-    # KITA HAPUS BAGIAN CEK /sys/class/net DI SINI
-    # Agar script tidak error saat ada interface tun0 bawaan HP.
             
     if threat:
         os.system('clear')
@@ -52,7 +56,6 @@ def security_checks():
 
 def validate_user():
     """Proses Login ke Server"""
-    # Jalankan cek keamanan ringan
     security_checks()
     
     os.system('clear')
@@ -76,18 +79,18 @@ def validate_user():
         user_key = saved_key
     else:
         print(f"{Y}[LOCKED] Authentication Required{W}")
+        # Di sini error terjadi sebelumnya karena B belum didefinisikan
         user_key = input(f"{B}INPUT KEY >> {W}")
 
     if not user_key: sys.exit("Key Empty.")
 
     print(f"{C}[*] Connecting to Secure Gateway...{W}")
     
-    # --- LOGIKA KONEKSI KE SERVER (Auto-Detect Game) ---
     # List game untuk auto-detect
     GAME_LIST = ["CODM", "BLOODSTRIKE", "BS", "PUBG", "PUBGM", "FF", "VIP", "TEST"]
     device_id = get_android_id()
     
-    # Prioritaskan game yang tersimpan di cache
+    # Prioritaskan game yang tersimpan
     scan_list = GAME_LIST.copy()
     if saved_game and saved_game in scan_list:
         scan_list.remove(saved_game)
@@ -96,11 +99,10 @@ def validate_user():
     valid = False
     detected_game = ""
 
-    # Loop Cek Server (Cepat)
+    # Loop Cek Server
     for game in scan_list:
         try:
             payload = {"game": game, "user_key": user_key, "serial": device_id}
-            # Timeout pendek (3 detik) biar scanning cepat
             r = requests.post(AUTH_URL, data=payload, timeout=3)
             if r.status_code == 200:
                 resp = r.json()
@@ -112,7 +114,6 @@ def validate_user():
             pass
             
     if valid:
-        # Simpan Key jika sukses
         with open("license.key", "w") as f: 
             f.write(f"{user_key}|{detected_game}")
         print(f"{G}[SUCCESS] ACCESS GRANTED ({detected_game}){W}")
