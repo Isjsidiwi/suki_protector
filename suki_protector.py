@@ -1,125 +1,31 @@
-import os
-import sys
-import subprocess
-import requests
-import time
-import uuid
+# ENCRYPTED BY SUKI VORTEX ENGINE
+import sys, base64, marshal, zlib, time
 
-# --- CONFIG ---
-AUTH_URL = "https://lixynso.x10.mx/connect"
+# Anti-Debug Check
+if sys.gettrace() is not None:
+    print("Debug detected."); sys.exit()
 
-# --- DEFINISI WARNA ---
-R = "\033[31m"   # Merah
-G = "\033[32m"   # Hijau
-C = "\033[36m"   # Cyan
-Y = "\033[33m"   # Kuning
-W = "\033[0m"    # Putih (Reset)
-P = "\033[35m"   # Purple
-B = "\033[1m"    # Bold
+FQmMw = 321; SFeDY = 'x' if FQmMw > 0 else 'null'
 
-def get_android_id():
-    """Mendapatkan Device ID"""
+_00x0000x = "GcsPY2mxDjpP70jfj3EvzkbvjYcpfH6a"
+_xx0x0xxx = "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"
+
+def _x000xxx0(data, key):
     try:
-        cmd = "settings get secure android_id"
-        proc = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out, err = proc.communicate()
-        if out: return out.decode('utf-8').strip()
-    except: pass
-    return str(uuid.getnode())
+        d = base64.b64decode(data)
+        dec = []
+        ki = [ord(c) for c in key]
+        kl = len(key)
+        for i, b in enumerate(d):
+            k = ki[i % kl]
+            dec.append(b ^ k)
+        return bytes(dec)
+    except: return None
 
-def security_checks():
-    """Cek Keamanan: Anti-Sniffer Only"""
-    threat = False
-    threat_type = ""
-
-    # Cek Environment Proxy
-    proxies = ["http_proxy", "https_proxy", "HTTP_PROXY", "HTTPS_PROXY"]
-    for proxy in proxies:
-        if proxy in os.environ:
-            threat = True
-            threat_type = "HTTP CANARY / SNIFFER DETECTED"
-            
-    if threat:
-        os.system('clear')
-        print(f"\n{R}╔════════════════════════════════════════════╗{W}")
-        print(f"{R}║         SECURITY BREACH DETECTED           ║{W}")
-        print(f"{R}╠════════════════════════════════════════════╣{W}")
-        print(f"{R}║ TYPE: {threat_type:<28} ║{W}")
-        print(f"{R}║ [!] Please turn off Packet Sniffer app.    ║{W}")
-        print(f"{R}╚════════════════════════════════════════════╝{W}")
-        if os.path.exists("license.key"): os.remove("license.key")
-        time.sleep(2)
-        sys.exit()
-
-def validate_user():
-    """Proses Login ke Server"""
-    security_checks()
-    
-    os.system('clear')
-    print(f"{P}╔══════════════════════════════════════╗{W}")
-    print(f"{P}║      SUKI PROTECTOR - GUARD SYSTEM   ║{W}")
-    print(f"{P}╚══════════════════════════════════════╝{W}")
-    
-    # Auto-Load Key
-    saved_key, saved_game = "", ""
-    if os.path.exists("license.key"):
-        try:
-            with open("license.key", "r") as f:
-                d = f.read().strip().split("|")
-                if len(d)>=1: saved_key=d[0]
-                if len(d)>=2: saved_game=d[1]
-        except: pass
-
-    if saved_key:
-        print(f"{C}[*] Verifying Session Integrity...{W}")
-        time.sleep(0.5)
-        user_key = saved_key
-    else:
-        print(f"{Y}[LOCKED] Authentication Required{W}")
-        user_key = input(f"{B}INPUT KEY >> {W}")
-
-    if not user_key: sys.exit("Key Empty.")
-
-    print(f"{C}[*] Connecting to Secure Gateway...{W}")
-    
-    # List game untuk auto-detect
-    GAME_LIST = ["CODM", "BLOODSTRIKE", "BS", "PUBG", "PUBGM", "FF", "VIP", "TEST"]
-    device_id = get_android_id()
-    
-    # Prioritaskan game yang tersimpan
-    scan_list = GAME_LIST.copy()
-    if saved_game and saved_game in scan_list:
-        scan_list.remove(saved_game)
-        scan_list.insert(0, saved_game)
-
-    valid = False
-    detected_game = ""
-
-    # Loop Cek Server
-    for game in scan_list:
-        try:
-            payload = {"game": game, "user_key": user_key, "serial": device_id}
-            r = requests.post(AUTH_URL, data=payload, timeout=3)
-            if r.status_code == 200:
-                resp = r.json()
-                if resp.get("status") is True:
-                    valid = True
-                    detected_game = game
-                    break
-        except:
-            pass
-            
-    if valid:
-        # Simpan Key dan Game untuk login berikutnya (tapi tidak ditampilkan)
-        with open("license.key", "w") as f: 
-            f.write(f"{user_key}|{detected_game}")
-        
-        # PESAN SUKSES BARU (TANPA NAMA GAME)
-        print(f"{G}[SUCCESS] ACCESS GRANTED - SESSION SECURED{W}")
-        time.sleep(1)
-        return True
-    else:
-        print(f"{R}[!] Access Denied: Invalid Key or HWID{W}")
-        if os.path.exists("license.key"): os.remove("license.key")
-        time.sleep(2)
-        sys.exit()
+try:
+    bQZyk = 182; lhhxf = 'z' if bQZyk > 0 else 'null'
+    # Execute Payload
+    exec(marshal.loads(zlib.decompress(_x000xxx0(_xx0x0xxx, _00x0000x))))
+except Exception as e:
+    # Error Handling Silent
+    sys.exit()
